@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import env from "../../.secrets.js";
 import ProductCardsList from "../components/ProductCards/ProductCardsList";
-import type { ProductCard } from "../components/ProductCards/ProductCardsItem";
+import { type ProductCard } from "../components/ProductCards/ProductCardsItem";
+import Alert, { type TAlert } from "../components/Alert";
 
 const query = `
 query($isPreview: Boolean=false) {
@@ -12,6 +13,9 @@ query($isPreview: Boolean=false) {
     title
     sitewideAlert {
       text
+      alertVariant {
+        variant
+      }
       enabled
     }
     productCardCarouselCollection(limit: 5) {
@@ -47,14 +51,9 @@ query($isPreview: Boolean=false) {
 }
 `;
 
-type Alert = {
-  text: string;
-  enabled: boolean;
-};
-
 type Page = {
   title: string;
-  sitewideAlert: Alert;
+  sitewideAlert: TAlert;
   heroBanner: {
     title: string;
     url: string;
@@ -93,9 +92,7 @@ export default function Home() {
           console.error(errors);
         }
 
-        console.log(data.page);
-
-        setPage(data.page);
+        setPage(data?.page);
       });
   }, [isPreview]);
 
@@ -105,9 +102,7 @@ export default function Home() {
 
   return (
     <main>
-      {!!page.sitewideAlert?.text && page.sitewideAlert.enabled && (
-        <div className="bg-yellow-200 text-yellow-700 flex p-4">{page.sitewideAlert.text}</div>
-      )}
+      <Alert data={page.sitewideAlert} />
       {!page ? (
         <p>Loading...</p>
       ) : (
