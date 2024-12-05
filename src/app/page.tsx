@@ -76,14 +76,14 @@ export default function Home() {
         body: JSON.stringify({ query, variables: { isPreview } }),
       })
       .then((response) => response.json())
-      .then(({ data, errors }: { data: Data; errors: any }) => {
+      .then(({ data, errors }: { data: Data; errors: unknown }) => {
         if (errors) {
           console.error(errors);
         }
 
         setPage(data.page);
       });
-  }, [query, isPreview]);
+  }, [isPreview]);
 
   if (!page) {
     return "Loading...";
